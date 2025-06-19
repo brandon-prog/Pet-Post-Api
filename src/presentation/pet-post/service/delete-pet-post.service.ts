@@ -1,3 +1,4 @@
+import { CustomError } from "../../../domain";
 import { FinderPetPostService } from "./finder-pet-post.service";
 
 export class DeletePetPostService {
@@ -7,7 +8,7 @@ export class DeletePetPostService {
         const petPost = await this.finderPetPostService.executeByFindOne(id);
 
         if (!petPost) {
-            throw new Error('Pet post not found');
+            throw CustomError.internalServer('internal server error');
         }
     }
 }

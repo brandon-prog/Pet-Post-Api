@@ -5,6 +5,7 @@ import { FinderPetPostService } from "./service/finder-pet-post.service";
 import { ApprovePetPostService } from "./service/approve-pet-post.service";
 import { RejectPetPostService } from "./service/reject-pet-post.service";
 import { DeletePetPostService } from "./service/delete-pet-post.service";
+import { AuthMiddleware } from "../common/middlewares/auth.middleware";
 
 
 
@@ -27,6 +28,7 @@ export class PetPostRoutes {
             deletePetPostService
         );
 
+        router.use(AuthMiddleware.protect);
         router.post('/', controller.create);
         router.get('/', controller.findAll);
         router.get('/:id', controller.findOne);

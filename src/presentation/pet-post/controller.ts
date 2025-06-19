@@ -4,6 +4,7 @@ import { FinderPetPostService } from "./service/finder-pet-post.service";
 import { ApprovePetPostService } from "./service/approve-pet-post.service";
 import { RejectPetPostService } from "./service/reject-pet-post.service";
 import { DeletePetPostService } from "./service/delete-pet-post.service";
+import { handleError } from "../common/errors/handleError";
 
 export class PetPostController {
     constructor(
@@ -20,7 +21,7 @@ export class PetPostController {
         .execute(req.body)
         .then((petPost) => res.status(201).json(petPost))
         .catch((error) => 
-            res.status(500).json({ message: 'internal server error'})
+            handleError(error, res)
     );
     };
 
@@ -29,7 +30,7 @@ export class PetPostController {
         .executeByFindAll()
         .then((petPost) => res.status(200).json(petPost))
         .catch((error) => 
-            res.status(500).json({ message: 'internal server error'})
+            handleError(error, res)
     );
     };
 
@@ -39,7 +40,7 @@ export class PetPostController {
         .executeByFindOne(id)
         .then((petPost) => res.status(200).json(petPost))
         .catch((error) => 
-            res.status(500).json({ message: 'internal server error'})
+            handleError(error, res)
     );
     }
 
@@ -49,7 +50,7 @@ export class PetPostController {
         .execute(id)
         .then((petPost) => res.status(200).json(petPost))
         .catch((error) => 
-            res.status(500).json({ message: 'internal server error'})
+            handleError(error, res)
     );
     };
 
@@ -59,7 +60,7 @@ export class PetPostController {
         .execute(id)
         .then((petPost) => res.status(200).json(petPost))
         .catch((error) => 
-            res.status(500).json({ message: 'internal server error'})
+            handleError(error, res)
     );
 }
 
@@ -69,7 +70,7 @@ export class PetPostController {
         .execute(id)
         .then(() => res.status(204).send())
         .catch((error) => 
-            res.status(500).json({ message: 'internal server error' })
+            handleError(error, res)
         );
 };
 

@@ -1,17 +1,23 @@
-import { User } from "../../../data";
+import { encriptAdapter } from "../../../config/bcrypt.adapter";
+import {  User } from "../../../data";
+import { CustomError, RegisterUserDto } from "../../../domain";
 
 export class CreatorUserService {
-    async execute(data: any) {
-        const user = new User();
+    async execute(data: RegisterUserDto) {
+        const user = new User()
 
         user.name = data.name.trim().toLowerCase();
         user.email = data.email.trim().toLowerCase();
-        user.password = data.password.trim();
+        user.password = await encriptAdapter.hash(data.password.trim());
         try {
             await user.save();
-            return user;
-        } catch (error) {
-            throw new Error("Error creating user");
-        }
+            return{
+                name: user.name,
+                email: user.email,
+                password: user.password
+};
+    } catch (error) {
+        throw CustomError.internalServer('internal server error');
+    }
 }
 }

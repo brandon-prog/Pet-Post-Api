@@ -45,5 +45,5 @@ status: boolean;
     nullable: false,
 
 })
-createt_at: Date;
+created_at: Date;
 }

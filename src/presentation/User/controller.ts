@@ -3,6 +3,9 @@ import { CreatorUserService } from "./services/creator-user.service";
 import { LoginUserService } from "./services/login-user.service";
 import { FinderUserService } from "./services/finder-user.service";
 import { DeleteUserService } from "./services/delete-user.service";
+import { LoginUserDto, RegisterUserDto } from "../../domain";
+import { handleError } from "../common/errors/handleError";
+import { envs } from "../../config/env";
 
 export class UserController {
     constructor(
@@ -13,28 +16,55 @@ export class UserController {
     ) {}
 
     register = (req: Request, res: Response) => {
-        this.creatorUserService.execute(req.body)
+        const [error, data] = RegisterUserDto.execute(req.body);
+
+        if (error) {
+            return res.status(422).json({ message: error });
+        }
+
+        this.creatorUserService
+        .execute(data!)
         .then((user) => res.status(201).json(user))
         .catch((error) => 
-            res.status(500).json({ message: 'internal server error'})
+            handleError(error, res)
         );
     };
 
     login = (req: Request, res: Response) => {
-        this.loginUserService
-            .execute()
-            .then((data) => res.status(200).json(data))
-            .catch((error) => 
-                res.status(500).json({ message: 'internal server error'})
-            );
+    const [error, data] = LoginUserDto.execute(req.body);
+
+    if (error) {
+        return res.status(422).json({ message: error });
     }
+
+    return this.loginUserService  
+        .execute(data!)
+        .then((data) => {
+
+            res.cookie('token', data.token, {
+                httpOnly: true,
+                secure: envs.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 3 * 60 * 60 * 100,
+            });
+            res.status(200).json(data);
+        })
+        .catch((error) => {
+            console.error('[Controller] Login error:', error);
+            handleError(error, res);
+        });
+};
 
     findAll = (req: Request, res: Response) => {
         this.finderUserService
         .executeByFiendAll()
-        .then((data) => res.status(201).json(data))
+        .then((data) => {
+            
+
+            res.status(200).json(data);
+        })
         .catch((error) => 
-            res.status(500).json({ message: 'internal server error'})
+            handleError(error, res)
         );
     };
 
@@ -44,7 +74,7 @@ export class UserController {
         this.finderUserService.executeByFindOne(id)
         .then((data) => res.status(200).json(data))
         .catch((error) => 
-                res.status(500).json({ message: 'internal server error'})
+                handleError(error, res)
         );
     };
 
@@ -54,7 +84,7 @@ export class UserController {
         this.deleteUserService.execute(id)
         .then(() => res.status(200).json({ message: 'User deleted successfully' }))
         .catch((error) => 
-            res.status(500).json({ message: error.message })
+            handleError(error, res)
         );
     };
 }

@@ -4,6 +4,8 @@ import { UserController } from "./controller";
 import { LoginUserService } from "./services/login-user.service";
 import { FinderUserService } from "./services/finder-user.service";
 import { DeleteUserService } from "./services/delete-user.service";
+import { AuthMiddleware } from "../common/middlewares/auth.middleware";
+import { UserRole } from "../../data";
 
 export class UserRoutes {
     static get routes() {
@@ -15,9 +17,10 @@ export class UserRoutes {
         const deleteUserService = new DeleteUserService();
         const controller = new UserController(creatorUserService, loginUserService, finderUserService, deleteUserService);
 
-        router.get('/', controller.findAll);
         router.post('/register', controller.register);
         router.post('/login', controller.login);
+        router.use(AuthMiddleware.protect);
+        router.get('/',AuthMiddleware.restrictTo(UserRole.ADMIN), controller.findAll);
         router.get('/:id', controller.findOne);
         router.delete('/:id', controller.delete);
 
