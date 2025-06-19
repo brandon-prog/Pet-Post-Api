@@ -7,8 +7,25 @@ export class FinderPetPostService {
             where: {
                 status: PetPostStatus.APPROVED,
                 hasFound: false,
-            }
-        });
+            },
+            relations: ['user'],
+            select: {
+                id: true,
+                petName: true,
+                description: true,
+                imagen_url: true,
+                status: true,
+                hasFound: true,
+                user: {
+                    id: true,
+                    name: true,
+                    email: true
+                },
+            },
+            });
+
+
+        return PetPost;
     }
 
     async executeByFindOne(id: string): Promise<PetPost> {
