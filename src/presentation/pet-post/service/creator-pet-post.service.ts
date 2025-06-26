@@ -8,7 +8,7 @@ export class CreatorPetPostService {
         petPost.petName = data.petName.trim().toLowerCase();
         petPost.description = data.petName.trim().toLowerCase();
         petPost.imagen_url = data.petName.trim();
-        petPost.user = session.user;
+        petPost.user = session.sessionUse;
 
         try {
             return await petPost.save();

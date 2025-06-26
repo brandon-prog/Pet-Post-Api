@@ -8,7 +8,7 @@ export class LoginUserService {
 async execute(data : LoginUserDto) {
     const user = await this.ensureUserExists(data.email);
 
-    await this.ensurePasswordIsCorrect(data.password, user.password); // <- aquí estaba el problema
+    await this.ensurePasswordIsCorrect(data.password, user.password);
 
     const token = await this.generateToken({ id: user.id }, envs.JWT_EXPIRE_IN);
 

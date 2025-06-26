@@ -60,7 +60,6 @@ export class UserController {
         .executeByFiendAll()
         .then((data) => {
             
-
             res.status(200).json(data);
         })
         .catch((error) => 

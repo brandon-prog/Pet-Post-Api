@@ -25,4 +25,3 @@ async function main() {
 
     main()
 
-    //minuto 1:19:08
